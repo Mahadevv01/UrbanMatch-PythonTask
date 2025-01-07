@@ -34,3 +34,34 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@app.put("/users/{user_id}", response_model=schemas.User)
+def update_user(user_id: int, user: schemas.UserUpdate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    for key, value in user.dict(exclude_unset=True).items():
+        setattr(db_user, key, value)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(db_user)
+    db.commit()
+    return {"detail": "User deleted successfully"}
+
+@app.get("/users/{user_id}/matches", response_model=list[schemas.User])
+def find_matches(user_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    # Example matching logic based on shared interests
+    matches = db.query(models.User).filter(
+        models.User.id != user_id,
+        models.User.interests.overlap(db_user.interests)
+    ).all()
+    return matches
