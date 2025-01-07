@@ -60,3 +60,31 @@ This project provides a basic skeleton for a FastAPI-based backend application.
 1. Clone the repository:
    ```bash
    git clone https://github.com/abhishek-UM/UrbanMatch-PythonTask.git
+
+2. Navigate to the project directory:
+   ```bash
+   cd UrbanMatch-PythonTask
+
+3. Install the required dependencies:
+  ```bash
+   pip install -r requirements.txt
+
+4. Start the application:
+  ```bash
+  uvicorn main:app --reload
+
+5. Access the application in your browser at http://127.0.0.1:8000
+
+
+## EndPoints:
+
+1. Create User: POST /users/
+2. Read Users: GET /users/
+3. Read User by ID: GET /users/{user_id}
+4. Update User: PUT /users/{user_id}
+5. Delete User: DELETE /users/{user_id}
+6. Find Matches: GET /users/{user_id}/matches
+
+
+
+
